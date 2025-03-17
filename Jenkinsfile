@@ -1,27 +1,25 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.9'
+            image 'docker:24.0.7-dind'  // Pastikan menggunakan versi terbaru DinD
+            args '--privileged'         // Diperlukan untuk menjalankan Docker di dalam Docker
         }
     }
     stages {
-        stage('Setup Environment') {
+        stage('Setup Docker') {
             steps {
-                sh '''
-                apt-get update
-                apt-get install -y python3 python3-pip
-                python3 -m pip install --upgrade pip
-                '''
+                sh 'dockerd-entrypoint.sh & sleep 5'  // Jalankan daemon Docker dalam container
+                sh 'docker version'  // Verifikasi Docker tersedia
             }
         }
         stage('Build') {
             steps {
-                sh 'python3 -m pip install --upgrade pip'
+                sh 'docker build -t my-python-app .'
             }
         }
         stage('Test') {
             steps {
-                sh 'python3 -m unittest discover -s sources -p test_*.py'
+                sh 'docker run --rm my-python-app python -m unittest discover -s sources -p test_*.py'
             }
         }
     }
