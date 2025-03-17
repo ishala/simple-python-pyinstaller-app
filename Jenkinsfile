@@ -1,5 +1,7 @@
 pipeline {
-    agent any 
+    agent {
+        docker { image 'python:3.10' }  // Gunakan image dengan Python
+    }
     stages {
         stage('Build') { 
             steps {
