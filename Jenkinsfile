@@ -10,13 +10,16 @@ node {
     }
 
     stage('Setup Environment') {
-        sh 'python3 --version'
-        sh 'pip3 install pytest --break-system-packages' // Install pytest for testing
+        sh '''
+        python3 --version
+        pip3 install --upgrade pip --break-system-packages
+        pip3 install pytest --break-system-packages
+        '''
     }
 
     stage('Run Tests') {
         try {
-            sh 'pytest sources/test_calc.py --disable-warnings'
+            sh 'python3 -m unittest discover -s sources -p "test_*.py"'
         } catch (Exception e) {
             echo "Tests failed!"
             currentBuild.result = 'FAILURE'
@@ -25,6 +28,6 @@ node {
 
     stage('Cleanup') {
         echo "Cleaning up workspace..."
-        deleteDir() // Clean up workspace after completion
+        deleteDir()
     }
 }
