@@ -1,47 +1,31 @@
-pipeline {
-    agent any
-    environment {
-        PATH = "/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+node {
+    env.PATH = "/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+    stage('Check Docker') {
+        sh 'docker --version'
     }
-    stages {
-        stage('Check Docker') {
-            steps {
-                sh 'docker --version'
-            }
-        }
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    stage('Checkout') {
+        checkout scm
+    }
 
-        stage('Setup Environment') {
-            steps {
-                sh 'python3 --version'
-                sh 'pip3 install --upgrade pip'
-                sh 'pip3 install pytest' // Install pytest untuk testing
-            }
-        }
+    stage('Setup Environment') {
+        sh 'python3 --version'
+        sh 'pip3 install --upgrade pip'
+        sh 'pip3 install pytest' // Install pytest for testing
+    }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    try {
-                        sh 'pytest sources/test_calc.py --disable-warnings'
-                    } catch (Exception e) {
-                        echo "Tests failed!"
-                        currentBuild.result = 'FAILURE'
-                    }
-                }
-            }
+    stage('Run Tests') {
+        try {
+            sh 'pytest sources/test_calc.py --disable-warnings'
+        } catch (Exception e) {
+            echo "Tests failed!"
+            currentBuild.result = 'FAILURE'
         }
+    }
 
-        stage('Cleanup') {
-            steps {
-                echo "Cleaning up workspace..."
-                deleteDir() // Bersihkan workspace setelah selesai
-            }
-        }
+    stage('Cleanup') {
+        echo "Cleaning up workspace..."
+        deleteDir() // Clean up workspace after completion
     }
 }
