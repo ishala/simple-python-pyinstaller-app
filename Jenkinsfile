@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        PATH = "C:\\\\Program Files\\\\Docker\\\\Docker\\\\resources\\\\bin;${env.PATH}"
+        PATH = "/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
     stages {
-        stage('Build') { 
+        stage('Check Docker') {
             steps {
                 sh 'docker --version'
             }
