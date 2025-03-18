@@ -11,7 +11,6 @@ node {
 
     stage('Setup Environment') {
         sh 'python3 --version'
-        sh 'pip3 install --upgrade pip'
         sh 'pip3 install pytest' // Install pytest for testing
     }
 
