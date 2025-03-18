@@ -9,6 +9,10 @@ node {
             checkout scm
         }
 
+        stage('Get Python'){
+            sh 'docker run --rm -v $PWD:/app -w /app python:3.9 bash -c "python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt || echo No requirements.txt found"'
+        }
+
         stage('Set Up Python Environment') {
             sh 'python3 -m venv venv'
             sh 'source venv/bin/activate && pip install --upgrade pip'
