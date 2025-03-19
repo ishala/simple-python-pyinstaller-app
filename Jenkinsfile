@@ -12,8 +12,7 @@ node {
     stage('Build') { 
         sh '''
         python3 --version
-        python3 -m venv venv  # Membuat virtual environment
-        source venv/bin/activate
+        python3 -m unittest --help
         '''
     }
 
