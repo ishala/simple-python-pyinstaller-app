@@ -9,15 +9,15 @@ node {
         checkout scm
     }
 
-    stage('Setup Environment') {
+    stage('Build') { 
         sh '''
         python3 --version
-        pip3 install --upgrade pip --break-system-packages
-        pip3 install pytest --break-system-packages
+        python3 -m venv venv  # Membuat virtual environment
+        source venv/bin/activate
         '''
     }
 
-    stage('Run Tests') {
+    stage('Test') {
         try {
             sh 'python3 -m unittest discover -s sources -p "test_*.py"'
         } catch (Exception e) {
