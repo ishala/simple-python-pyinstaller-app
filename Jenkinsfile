@@ -70,11 +70,11 @@ node {
             -w /app \
             --env RAILWAY_TOKEN=$RAILWAY_TOKEN \
             python:3.9 bash -c "
-            apt-get update && apt-get install -y curl &&
-            curl -fsSL https://railway.app/install.sh | sh &&
-            railway login --token $RAILWAY_TOKEN &&
-            railway init --service submission-cicd-pipeline &&
-            railway up
+            apt-get update && apt-get install -y curl sudo &&
+            curl -fsSL https://railway.app/install.sh | sudo sh &&
+            sudo railway login --token $RAILWAY_TOKEN &&
+            sudo railway init --service submission-cicd-pipeline &&
+            sudo railway up
             "
             '''
         }
