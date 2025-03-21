@@ -71,12 +71,12 @@ node {
             python:3.9 bash -c "
             apt-get update && apt-get install -y curl sudo &&
             curl -fsSL https://railway.app/install.sh | sudo sh &&
-            sudo railway login --token $RAILWAY_TOKEN &&
-            sudo railway init --service submission-cicd-pipeline &&
-            sudo railway up
+            echo $RAILWAY_TOKEN | railway login &&
+            railway init --service submission-cicd-pipeline &&
+            railway up
             "
-            '''
-        }
+        '''
+    }
 
         echo 'Pipeline has finished successfully.'
     }
