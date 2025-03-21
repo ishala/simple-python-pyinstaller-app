@@ -33,16 +33,23 @@ node {
         }
     }
 
-    stage('Deploy') {
-        sh 'docker run --rm -v $PWD:/app -w /app python:3.9 bash -c "\
+     stage('Deploy') {
+        echo "Starting application..."
+        sh 'docker run -d --name my_app -p 5000:5000 python:3.9 bash -c "\
         pip install pyinstaller && \
         pyinstaller --onefile sources/add2vals.py"'
-        
-        sleep 60  // Tunggu 1 menit
+
+        echo "Application is running."
+
+        // 🛑 Menunggu input manual, tetapi dengan timeout 1 menit
+        timeout(time: 1, unit: 'MINUTES') {
+            input message: 'Coba aplikasi sekarang! Klik "Proceed" untuk lanjut atau tunggu 1 menit untuk otomatis berakhir.'
+        }
+
+        echo "Stopping application..."
+        sh 'docker stop my_app && docker rm my_app'
 
         echo 'Pipeline has finished successfully.'
-
-        archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
     }
 
     stage('Post-Cleanup') {
