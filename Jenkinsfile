@@ -72,6 +72,7 @@ node {
         python:3.9 bash -c "
         apt-get update && apt-get install -y curl sudo &&
         curl -fsSL https://railway.app/install.sh | sudo sh &&
+        railway login &&
         railway link -p 195b4ce6-0f16-4ef3-9ca3-a6ccde780a04 &&
         railway up
         "
