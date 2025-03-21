@@ -63,7 +63,7 @@ node {
         echo "Deploying to Railway..."
         
         // Menambahkan proses deploy ke Railway
-        sh 'apt update && apt install -y sudo'
+        sh 'apk update && apk add --no-cache curl'
         sh 'curl -fsSL https://railway.app/install.sh | sh'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
