@@ -52,23 +52,26 @@ node {
         }
 
         // Jika user tidak memberikan input, tetap tunggu 1 menit sebelum lanjut
-        if (userInput == null) {
-            echo "Waiting for 1 minute before proceeding..."
-            sh 'sleep 60'
-        }
+        // if (userInput == null) {
+        //     echo "Waiting for 1 minute before proceeding..."
+        //     sh 'sleep 60'
+        // }
 
         echo "Stopping application..."
         sh 'docker stop my_app && docker rm my_app'
 
         echo "Deploying to Railway..."
-        
-        // Menambahkan proses deploy ke Railway
-        sh 'apk update && apk add --no-cache curl'
-        sh 'curl -fsSL https://railway.app/install.sh | sh'
+
+        // Pastikan sudo sudah terinstall di jenkins-docker
+        sh 'docker exec jenkins-docker sh -c "apt-get update && apt-get install -y sudo"'
+
+        // Install Railway CLI di dalam jenkins-docker
+        sh 'docker exec jenkins-docker sh -c "curl -fsSL https://railway.app/install.sh | sh"'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
-            sh 'railway login --token $RAILWAY_API_TOKEN'
+            sh 'docker exec jenkins-docker sh -c "railway login --token $RAILWAY_API_TOKEN"'
         }
+
 
         sh '''
         railway init --service submission-cicd-pipeline
