@@ -66,10 +66,10 @@ node {
         // sh 'apt-get update && apt-get install -y sudo'
 
         // Install Railway CLI di dalam jenkins-docker
-        sh 'curl -fsSL https://railway.app/install.sh | sh'
+        sh 'sudo curl -fsSL https://railway.app/install.sh | sh'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
-            sh 'railway login --token $RAILWAY_API_TOKEN'
+            sh 'sudo railway login --token $RAILWAY_API_TOKEN'
         }
 
 
