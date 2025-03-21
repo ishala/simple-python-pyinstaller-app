@@ -60,8 +60,6 @@ node {
         echo "Stopping application..."
         sh 'docker stop my_app && docker rm my_app'
 
-        echo "Deploying to Railway..."
-
         echo 'Pipeline has finished successfully.'
     }
 
