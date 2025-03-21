@@ -1,4 +1,12 @@
 node {
+    stage('Pre-Cleanup') {
+        echo "Cleaning workspace before starting..."
+        cleanWs()
+        sh '''
+        docker ps -a | grep python && docker rm -f $(docker ps -aq) || true
+        '''
+    }
+
     env.PATH = "/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
     stage('Check Docker') {
@@ -31,15 +39,14 @@ node {
         pyinstaller --onefile sources/add2vals.py"'
         
         sleep 60  // Tunggu 1 menit
-        
+
         echo 'Pipeline has finished successfully.'
 
         archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
     }
 
-
-    stage('Cleanup') {
-        echo "Cleaning up workspace..."
-        deleteDir()
+    stage('Post-Cleanup') {
+        echo "Cleaning up workspace after finishing..."
+        cleanWs()
     }
 }
