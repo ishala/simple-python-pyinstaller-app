@@ -63,7 +63,6 @@ node {
         echo "Deploying to Railway..."
         
         // Menambahkan proses deploy ke Railway
-        sh 'which sudo'
         sh 'apt update && apt install -y sudo'
         sh 'curl -fsSL https://railway.app/install.sh | sh'
 
