@@ -63,7 +63,7 @@ node {
         echo "Deploying to Railway..."
 
         // Pastikan sudo sudah terinstall di jenkins-docker
-        // sh 'apt-get update && apt-get install -y sudo'
+        sh 'apt-get update && apt-get install -y sudo'
 
         // Install Railway CLI di dalam jenkins-docker
         sh 'sudo curl -fsSL https://railway.app/install.sh | sh'
