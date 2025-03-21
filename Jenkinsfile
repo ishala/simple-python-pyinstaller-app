@@ -65,7 +65,6 @@ node {
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
         sh '''
         docker run --rm --name deploy-container \
-            --network jenkins \
             -v $(pwd):/app \
             -w /app \
             --env RAILWAY_TOKEN=$RAILWAY_TOKEN \
