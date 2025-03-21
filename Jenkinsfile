@@ -32,11 +32,6 @@ node {
             currentBuild.result = 'FAILURE'
         }
     }
-    stage('Debug Docker') {
-        sh 'docker version'
-        sh 'docker info'
-        sh 'docker ps -a'
-    }
 
     stage('Deploy') {
         echo "Starting application..."
@@ -69,10 +64,10 @@ node {
         
         // Pastikan sudo sudah terinstall di jenkins-docker
         // sh 'apt-get update && apt-get install -y sudo'
-        sh 'echo $DOCKER_HOST'
+        
 
         // Install Railway CLI di dalam jenkins-docker
-        sh 'sudo curl -fsSL https://railway.app/install.sh | sh'
+        sh 'docker exec -it docker sh -c "curl -fsSL https://railway.app/install.sh | sh"'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
             sh 'sudo railway login --token $RAILWAY_API_TOKEN'
