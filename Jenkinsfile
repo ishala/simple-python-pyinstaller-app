@@ -36,10 +36,4 @@ node {
 
         archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
     }
-
-
-    stage('Cleanup') {
-        echo "Cleaning up workspace..."
-        deleteDir()
-    }
 }
