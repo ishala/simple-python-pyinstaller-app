@@ -63,7 +63,7 @@ node {
         echo "Deploying to Railway..."
         
         // Menambahkan proses deploy ke Railway
-        sh 'curl -fsSL https://railway.app/install.sh | sh -s -- --path "$HOME/.local/bin"'
+        sh 'wget https://github.com/railwayapp/cli/releases/latest/download/railway-linux-amd64 -O railway chmod +x railway ./railway --version'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
             sh 'railway login --token $RAILWAY_API_TOKEN'
