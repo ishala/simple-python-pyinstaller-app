@@ -33,6 +33,19 @@ node {
         }
     }
 
+    stage('Manual Approval') {
+        echo "Waiting for manual approval..."
+        try {
+            timeout(time: 5, unit: 'MINUTES') {
+                input message: 'Lanjutkan ke tahap Deploy?'
+            }
+        } catch (Exception e) {
+            echo "No approval received, stopping pipeline."
+            currentBuild.result = 'ABORTED'
+            return
+        }
+    }
+
     stage('Deploy') {
         echo "Starting application..."
         sh 'docker run -d --name my_app -p 5000:5000 python:3.9 bash -c "\
@@ -40,27 +53,10 @@ node {
         pyinstaller --onefile sources/add2vals.py"'
 
         echo "Application is running."
-
-        // 🕒 Menunggu input manual, jika tidak ada interaksi dalam 1 menit, lanjut otomatis
-        def userInput = null
-        try {
-            timeout(time: 1, unit: 'MINUTES') {
-                userInput = input message: 'Coba aplikasi sekarang! Klik "Proceed" untuk lanjut atau tunggu 1 menit untuk otomatis berakhir.'
-            }
-        } catch (Exception e) {
-            echo "No user input detected, proceeding automatically..."
-        }
-
-        // Jika user tidak memberikan input, tetap tunggu 1 menit sebelum lanjut
-        if (userInput == null) {
-            echo "Waiting for 1 minute before proceeding..."
-            sh 'sleep 60'
-        }
-
+        sh 'sleep 60'
         echo "Stopping application..."
         sh 'docker stop my_app && docker rm my_app'
-
-        echo 'Pipeline has finished successfully.'
+        
     }
 
     stage('Post-Cleanup') {
