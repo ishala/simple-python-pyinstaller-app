@@ -62,22 +62,22 @@ node {
 
         echo "Deploying to Railway..."
         
-        // Pastikan sudo sudah terinstall di jenkins-docker
-        // sh 'apt-get update && apt-get install -y sudo'
-        
-
-        // Install Railway CLI di dalam jenkins-docker
-        sh 'docker exec -it docker sh -c "curl -fsSL https://railway.app/install.sh | sh"'
-
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
-            sh 'sudo railway login --token $RAILWAY_API_TOKEN'
-        }
-
-
         sh '''
-        railway init --service submission-cicd-pipeline
-        railway up
-        '''
+        docker run --rm --name deploy-container \
+            --network jenkins \
+            -v $(pwd):/app \
+            -w /app \
+            --env RAILWAY_TOKEN=$RAILWAY_TOKEN \
+            python:3.9 bash -c "
+            apt-get update && apt-get install -y curl &&
+            curl -fsSL https://railway.app/install.sh | sh &&
+            railway login --token $RAILWAY_TOKEN &&
+            railway init --service submission-cicd-pipeline &&
+            railway up
+            "
+            '''
+        }
 
         echo 'Pipeline has finished successfully.'
     }
