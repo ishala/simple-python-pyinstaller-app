@@ -26,11 +26,9 @@ node {
     }
 
     stage('Deploy') {
-        node('docker') {  // Menjalankan di agen Docker
-            sh 'docker run --rm -v $PWD:/app -w /app python:3.9 bash -c "\
-                pip install pyinstaller && \
-                pyinstaller --onefile sources/add2vals.py"'
-        }
+        sh 'docker run --rm -v $PWD:/app -w /app python:3.9 bash -c "\
+        pip install pyinstaller && \
+        pyinstaller --onefile sources/add2vals.py"'
         
         sleep 60  // Tunggu 1 menit
         
