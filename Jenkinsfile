@@ -32,6 +32,11 @@ node {
             currentBuild.result = 'FAILURE'
         }
     }
+    stage('Debug Docker') {
+        sh 'docker version'
+        sh 'docker info'
+        sh 'docker ps -a'
+    }
 
     stage('Deploy') {
         echo "Starting application..."
@@ -61,7 +66,7 @@ node {
         sh 'docker stop my_app && docker rm my_app'
 
         echo "Deploying to Railway..."
-
+        
         // Pastikan sudo sudah terinstall di jenkins-docker
         // sh 'apt-get update && apt-get install -y sudo'
         sh 'echo $DOCKER_HOST'
