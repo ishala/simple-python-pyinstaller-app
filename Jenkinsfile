@@ -52,35 +52,15 @@ node {
         }
 
         // Jika user tidak memberikan input, tetap tunggu 1 menit sebelum lanjut
-        // if (userInput == null) {
-        //     echo "Waiting for 1 minute before proceeding..."
-        //     sh 'sleep 60'
-        // }
+        if (userInput == null) {
+            echo "Waiting for 1 minute before proceeding..."
+            sh 'sleep 60'
+        }
 
         echo "Stopping application..."
         sh 'docker stop my_app && docker rm my_app'
 
         echo "Deploying to Railway..."
-        
-        withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
-    sh """
-    docker run --rm --name deploy-container \
-        -m 1g --memory-swap 1g \
-        -v \$(pwd):/app \
-        -w /app \
-        --env RAILWAY_TOKEN=${env.RAILWAY_TOKEN} \
-        python:3.9 bash -c "
-        apt-get update && apt-get install -y curl sudo &&
-        curl -fsSL https://railway.app/install.sh | sudo sh &&
-        railway login --auth 175d8681-1e67-4991-83a6-fd5c1449080a &&
-        railway link -p 195b4ce6-0f16-4ef3-9ca3-a6ccde780a04 &&
-        railway up
-        "
-    """
-}
-
-
-
 
         echo 'Pipeline has finished successfully.'
     }
