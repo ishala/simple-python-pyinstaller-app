@@ -63,7 +63,9 @@ node {
         echo "Deploying to Railway..."
         
         // Menambahkan proses deploy ke Railway
-        sh 'wget https://github.com/railwayapp/cli/releases/latest/download/railway-linux-amd64 -O railway chmod +x railway ./railway --version'
+        sh 'which sudo'
+        sh 'apt update && apt install -y sudo'
+        sh 'curl -fsSL https://railway.app/install.sh | sh'
 
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
             sh 'railway login --token $RAILWAY_API_TOKEN'
