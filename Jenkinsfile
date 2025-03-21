@@ -25,6 +25,14 @@ node {
         }
     }
 
+    stage('Deploy') {
+        steps {
+            sh './jenkins/scripts/deploy.sh'
+            input message: 'Apakah aplikasi sudah selesai dijalankan? (Klik "Proceed" untuk menghentikan)'
+            sh './jenkins/scripts/stop.sh'
+        }
+    }
+
     stage('Cleanup') {
         echo "Cleaning up workspace..."
         deleteDir()
