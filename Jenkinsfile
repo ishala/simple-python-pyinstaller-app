@@ -72,11 +72,12 @@ node {
         python:3.9 bash -c "
         apt-get update && apt-get install -y curl sudo &&
         curl -fsSL https://railway.app/install.sh | sudo sh &&
-        railway link ${env.RAILWAY_TOKEN} &&
+        railway login --auth ${env.RAILWAY_TOKEN} &&
         railway up
         "
     """
 }
+
 
 
 
