@@ -63,20 +63,20 @@ node {
         echo "Deploying to Railway..."
         
         withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
-        sh '''
-        docker run --rm --name deploy-container \
-            -v $(pwd):/app \
-            -w /app \
-            --env RAILWAY_TOKEN=$RAILWAY_TOKEN \
-            python:3.9 bash -c "
-            apt-get update && apt-get install -y curl sudo &&
-            curl -fsSL https://railway.app/install.sh | sudo sh &&
-            echo $RAILWAY_TOKEN | railway login &&
-            railway init --service submission-cicd-pipeline &&
-            railway up
-            "
-        '''
-    }
+            sh '''
+            docker run --rm --name deploy-container \
+                -v $(pwd):/app \
+                -w /app \
+                --env RAILWAY_TOKEN=$RAILWAY_TOKEN \
+                python:3.9 bash -c "
+                apt-get update && apt-get install -y curl sudo &&
+                curl -fsSL https://railway.app/install.sh | sudo sh &&
+                railway link $RAILWAY_TOKEN &&
+                railway up
+                "
+            '''
+        }
+
 
         echo 'Pipeline has finished successfully.'
     }
