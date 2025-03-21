@@ -33,7 +33,7 @@ node {
         }
     }
 
-     stage('Deploy') {
+    stage('Deploy') {
         echo "Starting application..."
         sh 'docker run -d --name my_app -p 5000:5000 python:3.9 bash -c "\
         pip install pyinstaller && \
@@ -41,13 +41,38 @@ node {
 
         echo "Application is running."
 
-        // 🛑 Menunggu input manual, tetapi dengan timeout 1 menit
-        timeout(time: 1, unit: 'MINUTES') {
-            input message: 'Coba aplikasi sekarang! Klik "Proceed" untuk lanjut atau tunggu 1 menit untuk otomatis berakhir.'
+        // 🕒 Menunggu input manual, jika tidak ada interaksi dalam 1 menit, lanjut otomatis
+        def userInput = null
+        try {
+            timeout(time: 1, unit: 'MINUTES') {
+                userInput = input message: 'Coba aplikasi sekarang! Klik "Proceed" untuk lanjut atau tunggu 1 menit untuk otomatis berakhir.'
+            }
+        } catch (Exception e) {
+            echo "No user input detected, proceeding automatically..."
+        }
+
+        // Jika user tidak memberikan input, tetap tunggu 1 menit sebelum lanjut
+        if (userInput == null) {
+            echo "Waiting for 1 minute before proceeding..."
+            sh 'sleep 60'
         }
 
         echo "Stopping application..."
         sh 'docker stop my_app && docker rm my_app'
+
+        echo "Deploying to Railway..."
+        
+        // Menambahkan proses deploy ke Railway
+        sh 'curl -fsSL https://railway.app/install.sh | sh'
+
+        withCredentials([string(credentialsId: 'RAILWAY_API_TOKEN', variable: 'RAILWAY_TOKEN')]) {
+            sh 'railway login --token $RAILWAY_API_TOKEN'
+        }
+
+        sh '''
+        railway init --service submission-cicd-pipeline
+        railway up
+        '''
 
         echo 'Pipeline has finished successfully.'
     }
